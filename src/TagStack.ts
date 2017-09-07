@@ -36,6 +36,12 @@ export class TagStack extends EventEmitter {
       }
     }
   }
+  
+  public addText(text: string) : void {
+    if (this.isStacking()) {
+      this.top().addText(text);
+    }
+  }
 
   public enterAndPushTag(tag: sax.Tag) : void {
     this.stack.push(new Element(tag));

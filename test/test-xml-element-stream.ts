@@ -1,20 +1,40 @@
 import {Element, ElementStream} from "../";
 import * as fs from 'fs';
 import * as path from 'path';
-import * as through2 from 'through2';
+import * as nodeunit from "nodeunit";
 
-exports.testwikidump = (test) => {
+const inChildren = (e: Element, children: Array<Element>) : boolean => {
+  for (let c of children) {
+    if (c == e) return true;
+  }
+  return false;
+}
+
+exports.testwikidump = (test : nodeunit.Test) => {
   let srcstream = fs.createReadStream(
       path.join(__dirname, "test.wikidump.xml")
   );
   
-
-  let wikistream = new ElementStream({});
+  let wikistream = ElementStream.create({});
   wikistream.registerTag("page");
   wikistream.registerTag("title");
 
-  srcstream.pipe(wikistream).pipe(through2.obj(()=>{
-    
-  }))
-  test.done();
+  let pageCnt = 0;
+  let titleCnt = 0;
+  let lastTitle : Element;
+  srcstream.pipe(wikistream)
+      .on('data', (e: Element)=>{
+        if (e.tag.name == 'page') {
+          pageCnt ++;
+          test.equals(inChildren(lastTitle, e.children), true, "Title is in page");
+        } else if (e.tag.name == 'title') {
+          titleCnt ++;
+          lastTitle = e;
+        }
+      })
+      .on('end', ()=>{
+        test.equals(pageCnt, 79, "Expect 79 pages discovered");
+        test.equals(pageCnt, titleCnt, "Same number of page and titles");
+        test.done();  
+      })
 }

@@ -10,7 +10,12 @@ export class ElementStream extends Transform {
   private parseError : Error;
   private tagsMap : Object = {};
 
-  constructor(options) {
+  static create(options) : ElementStream {
+    options.readableObjectMode = true;  // on out, element is returned
+    return new ElementStream(options);
+  }
+  
+  private constructor(options: object) {
     super(options);
     this._setupParser();
   }
@@ -48,16 +53,16 @@ export class ElementStream extends Transform {
         stack.exitTag(tag.name);
       }
     }
-    this.saxParser.onclosetag = (tagname: String) => {
+    this.saxParser.onclosetag = (tagname: string) => {
       stack.exitTag(tagname);
-
     }
-    this.saxParser.ontext = (text: String) => {
-      //console.log("!! text");
+    this.saxParser.ontext = (text: string) => {
+      stack.addText(text);
     }
+    
     stack.on('element', (e : Element) => {
-      this.emit('element', e);
       this.push(e);
     })
+    
   }
 }
