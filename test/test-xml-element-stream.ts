@@ -1,6 +1,7 @@
 import {Element, ElementStream} from "../";
 import * as fs from 'fs';
 import * as path from 'path';
+import * as stream from "stream";
 import * as nodeunit from "nodeunit";
 
 const inChildren = (e: Element, children: Array<Element>) : boolean => {
@@ -37,4 +38,41 @@ exports.testwikidump = (test : nodeunit.Test) => {
         test.equals(pageCnt, titleCnt, "Same number of page and titles");
         test.done();  
       })
+}
+
+exports.testcdata = (test:nodeunit.Test)=> {
+  class SrcStream extends stream.Readable {
+    constructor(content: string) {
+      super();
+      setTimeout(()=>{
+        this.push(content);
+        this.push(null);
+      }, 1);
+    }
+    _read(size:number) {}
+  }
+
+  let estream = ElementStream.create({});
+  estream.registerTag('p');
+  
+  let c = 0;
+  (new SrcStream(`
+  <root>
+    <p><![CDATA[paragraph 1 ]]>abc</p>
+    <p><![CDATA[paragraph 2 <p>]]></p>
+    <p><![CDATA[paragraph 3]]></p>
+  </root>
+  `))
+      .pipe(estream)
+      .on('data', (e: Element)=>{
+        switch (++c) {
+          case 1: test.equals(e.text, "paragraph 1 abc", "equal"); break;
+          case 2: test.equals(e.text, "paragraph 2 <p>", "equal"); break;
+          case 3: test.equals(e.text, "paragraph 3", "equal"); break;
+        }
+      })
+      .on('end', ()=>{
+        test.done();
+      })
+  
 }

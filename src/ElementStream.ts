@@ -59,6 +59,9 @@ export class ElementStream extends Transform {
     this.saxParser.ontext = (text: string) => {
       stack.addText(text);
     }
+    this.saxParser.oncdata = (cdata: string) => {
+      stack.addText(cdata);
+    }
     
     stack.on('element', (e : Element) => {
       this.push(e);

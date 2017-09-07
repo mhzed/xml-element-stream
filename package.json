@@ -1,12 +1,13 @@
 {
   "name": "xml-element-stream",
-  "version": "0.0.1",
-  "description": "Fast xml stream parser for large xml files, based on saxjs, in pure nodejs",
+  "version": "0.0.2",
+  "description": "Fast xml stream parser for large xml files, based on saxjs, in javascript only",
   "main": "index.js",
   "dependencies": {
     "sax": "^1.2.4",
     "typescript": "^2.5.2"
   },
+  "author": "",
   "devDependencies": {
     "@types/node": "^8.0.27",
     "@types/nodeunit": "0.0.30",
@@ -16,6 +17,5 @@
   "scripts": {
     "test": "nodeunit "
   },
-  "author": "",
   "license": "ISC"
 }
