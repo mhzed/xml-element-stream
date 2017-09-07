@@ -49,9 +49,6 @@ export class ElementStream extends Transform {
       } else {
         stack.enterTag(tag);
       }
-      if (tag.isSelfClosing) {
-        stack.exitTag(tag.name);
-      }
     }
     this.saxParser.onclosetag = (tagname: string) => {
       stack.exitTag(tagname);

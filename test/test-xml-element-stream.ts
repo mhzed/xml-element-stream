@@ -28,6 +28,7 @@ exports.testwikidump = (test : nodeunit.Test) => {
         if (e.tag.name == 'page') {
           pageCnt ++;
           test.equals(inChildren(lastTitle, e.children), true, "Title is in page");
+          test.equals(e.findFirstDescendant("text")!==null, true, "found text element");
         } else if (e.tag.name == 'title') {
           titleCnt ++;
           lastTitle = e;
