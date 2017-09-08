@@ -1,6 +1,6 @@
 {
   "name": "xml-element-stream",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Fast xml stream parser for large xml files, based on saxjs, in javascript only",
   "main": "index.js",
   "dependencies": {

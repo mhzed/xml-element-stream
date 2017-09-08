@@ -53,8 +53,7 @@ exports.testcdata = (test:nodeunit.Test)=> {
     _read(size:number) {}
   }
 
-  let estream = ElementStream.create({});
-  estream.registerTag('p');
+  let estream = ElementStream.create({tags: ['p']});
   
   let c = 0;
   (new SrcStream(`

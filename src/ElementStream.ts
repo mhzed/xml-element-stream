@@ -1,18 +1,29 @@
-import {Transform} from 'stream';
+import {Transform, TransformOptions} from 'stream';
 import * as sax from 'sax';
 import {TagStack} from './TagStack';
 import {Element} from "./Element";
 
 const Strict = true;
 
+export interface ElementStreamOption extends TransformOptions {
+  tags?: Array<string>
+}
+
 export class ElementStream extends Transform {
   private saxParser : sax.SAXParser;
   private parseError : Error;
   private tagsMap : Object = {};
 
-  static create(options) : ElementStream {
+  static create(options?: ElementStreamOption) : ElementStream {
+    if (!options) options = {};
     options.readableObjectMode = true;  // on out, element is returned
-    return new ElementStream(options);
+    let ret = new ElementStream(options);
+    if (options.tags) {
+      for (let t of options.tags) {
+        ret.registerTag(t);
+      }
+    }
+    return ret;
   }
   
   private constructor(options: object) {
