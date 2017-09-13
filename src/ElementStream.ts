@@ -13,6 +13,8 @@ export class ElementStream extends Transform {
   private saxParser : sax.SAXParser;
   private parseError : Error;
   private tagsMap : Object = {};
+  
+  private elementQueue : Array<Element> = [];
 
   static create(options?: ElementStreamOption) : ElementStream {
     if (!options) options = {};
@@ -34,15 +36,16 @@ export class ElementStream extends Transform {
   registerTag(tag : String) : void {
     this.tagsMap[tag.toLowerCase()] = true;
   }
-  
-  _write(chunk, encoding, callback) : void {
+
+  // override
+  _transform(chunk, encoding, callback) : void {
     this.saxParser.write(chunk);
+    while (this.elementQueue.length>0) {
+      this.push(this.elementQueue.shift());
+    }
     callback(this.parseError);
     this.parseError = null;
   }
-
-  // unnecessary ReadStream override
-  //_read(size) {}
 
   private _setupParser() : void {
     let stack = new TagStack();
@@ -72,8 +75,7 @@ export class ElementStream extends Transform {
     }
     
     stack.on('element', (e : Element) => {
-      this.push(e);
+      this.elementQueue.push(e);
     })
-    
   }
 }

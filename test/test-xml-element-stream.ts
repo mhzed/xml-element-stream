@@ -34,6 +34,10 @@ exports.testwikidump = (test : nodeunit.Test) => {
           lastTitle = e;
         }
       })
+      .on('error', (err)=>{
+        test.ifError(err);
+        test.done();
+      })
       .on('end', ()=>{
         test.equals(pageCnt, 79, "Expect 79 pages discovered");
         test.equals(pageCnt, titleCnt, "Same number of page and titles");
