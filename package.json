@@ -4,11 +4,12 @@
   "description": "Fast xml stream parser for large xml files, based on saxjs, in javascript only",
   "main": "index.js",
   "dependencies": {
-    "sax": "^1.2.4",
-    "typescript": "^2.5.2"
+    "sax": "^1.2.4"
   },
-  "author": "",
+  "author": "mhzedd@gmail.com",
+  "repository": "https://github.com/mhzed/xml-element-stream",
   "devDependencies": {
+    "typescript": "^2.5.2",
     "@types/node": "^8.0.27",
     "@types/nodeunit": "0.0.30",
     "@types/sax": "^1.0.0",
